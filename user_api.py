@@ -2,9 +2,13 @@
 
 import sys
 import base64
+import re
 
 def validate_password(password):
-    return True
+    if re.match(r'(?=^.{10,}$)(?=.*[A-Z])(?=.*[a-z])(?=.*\d)', password) is None:
+        print('password doesn\'t match requirements')
+    else:
+        return True
 	
 def validate_login(login):
     return True
