@@ -20,31 +20,29 @@ def validate_login(login):
     return True
 
 def add_user (args):
-    decoded_password = str(base64.b64decode(args [3]), 'utf-8')
-    if validate_password(decoded_password) and validate_login(args[2]):
-        info = 'ADD "' + args[1] + '", "' + args[2] + '", "' + decoded_password + '"'
+    decoded_password = str(base64.b64decode(args [2]), 'utf-8')
+    if validate_password(decoded_password) and validate_login(args[1]):
+        info = 'ADD "' + args[0] + '", "' + args[1] + '", "' + decoded_password + '"'
         return info
     else:
         sys.exit(1)
 
 
 def disable_user (args):
-    info = 'DISABLE "' + args[1] +'"'
+    info = 'DISABLE "' + args[0] +'"'
     return info;
 	
 
 def main():
     args = sys.argv[1:]
 
-    if not args:
-        print('usage: --add <name> <login> <password> or --del <login>')
-        sys.exit(1)
-
-    if args[0] == '--add':
-        info = add_user(args)
-
-    if args[0] == '--del':
+    if len(args) == 1:
         info = disable_user(args)
+    elif len(args) == 3:
+        info = add_user(args)
+    else:
+        print('Usage:\n To add new user: python user_api.py <name> <login> <password>\n To disable user: python user_api.py <login>')
+        sys.exit(1)
 
     with open('data.txt', 'a') as file:
         file.write(info + '\n')
