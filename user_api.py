@@ -1,6 +1,7 @@
 #Api to save or delete users
 
 import sys
+import base64
 
 def main():
     args = sys.argv[1:]
@@ -10,7 +11,7 @@ def main():
         sys.exit(1)
 
     if args[0] == '--add':
-        info = 'ADD "' + args[1] + '", "' + args[2] + '", "' + args [3] + '"'
+        info = 'ADD "' + args[1] + '", "' + args[2] + '", "' + str(base64.b64decode(args [3]), 'utf-8') + '"'
 
     if args[0] == '--del':
         info = 'DISABLE "' + args[1] +'"'
