@@ -1,4 +1,4 @@
-#Api to save or delete users
+#API to save or delete users
 
 import sys
 import base64
@@ -6,11 +6,17 @@ import re
 
 def validate_password(password):
     if re.match(r'(?=^.{10,}$)(?=.*[A-Z])(?=.*[a-z])(?=.*\d)', password) is None:
-        print('password doesn\'t match requirements')
+        print('password doesn\'t match the requirements')
+        return False
     else:
         return True
 	
 def validate_login(login):
+    with open('data.txt') as file:
+        for entry in file:
+            if entry.startswith("ADD") and entry.split(',')[1] == ' "' + login + '"':
+                print(login + ' already exists')
+                return False
     return True
 
 def add_user (args):
