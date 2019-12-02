@@ -14,6 +14,6 @@ Add user: ./add/name/login/password
 
 API will check for duplicated users on data.txt and will validate the password that must be provided in Base64, be at least 10 characters long with at least one uppercase, one lowercase and one digit.
 
-##Disable an user
+## Disable an user
 
 Disable User: ./disable/login
