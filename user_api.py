@@ -5,6 +5,7 @@ import base64
 import re
 
 app = Flask(__name__)
+path = ''
 
 def validate_password(password):
     if re.match(r'(?=^.{10,}$)(?=.*[A-Z])(?=.*[a-z])(?=.*\d)', password) is None:
@@ -12,7 +13,7 @@ def validate_password(password):
     return True
 	
 def validate_login(login):
-    with open('data.txt') as file:
+    with open(path +'/data.txt') as file:
         for entry in file:
             if entry.startswith("ADD") and entry.split(',')[1] == ' "' + login + '"':
                 return False
@@ -25,14 +26,16 @@ def add_user (name, login, password):
 def disable_user (login):
     info = 'DISABLE "' + login +'"'
     return info;
-	
+
+def write_file(info):
+    with open(path +'/data.txt', 'a') as file:
+        file.write(info + '\n')
+    return	
 
 @app.route('/disable/<login>', methods=['GET'])
 def disable_login(login):
     info = disable_user(login)
-	
-    with open('data.txt', 'a') as file:
-        file.write(info + '\n')
+    write_file(info)
     return info
 
 @app.route('/add/<name>/<login>/<password>', methods=['GET'])
@@ -45,10 +48,9 @@ def add_login(name, login, password):
         return 'User ' + login + ' already exists'
     else:
         info = add_user(name, login, decoded_password)
-    
-        with open('data.txt', 'a') as file:
-            file.write(info + '\n')
+        write_file(info)
         return info
 
 if __name__ == '__main__':
+    path  = sys.argv[1]
     app.run()
