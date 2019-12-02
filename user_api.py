@@ -46,9 +46,9 @@ def add_login(name, login, password):
     else:
         info = add_user(name, login, decoded_password)
     
-    with open('data.txt', 'a') as file:
-        file.write(info + '\n')
-    return info
+        with open('data.txt', 'a') as file:
+            file.write(info + '\n')
+        return info
 
 if __name__ == '__main__':
     app.run()
