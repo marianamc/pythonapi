@@ -1,52 +1,54 @@
 #API to save or delete users
-
+from flask import Flask
 import sys
 import base64
 import re
 
+app = Flask(__name__)
+
 def validate_password(password):
     if re.match(r'(?=^.{10,}$)(?=.*[A-Z])(?=.*[a-z])(?=.*\d)', password) is None:
-        print('password doesn\'t match the requirements')
         return False
-    else:
-        return True
+    return True
 	
 def validate_login(login):
     with open('data.txt') as file:
         for entry in file:
             if entry.startswith("ADD") and entry.split(',')[1] == ' "' + login + '"':
-                print(login + ' already exists')
                 return False
     return True
 
-def add_user (args):
-    decoded_password = str(base64.b64decode(args [2]), 'utf-8')
-    if validate_password(decoded_password) and validate_login(args[1]):
-        info = 'ADD "' + args[0] + '", "' + args[1] + '", "' + decoded_password + '"'
-        return info
-    else:
-        sys.exit(1)
+def add_user (name, login, password):
+    info = 'ADD "' + name + '", "' + login + '", "' + password + '"'
+    return info
 
-
-def disable_user (args):
-    info = 'DISABLE "' + args[0] +'"'
+def disable_user (login):
+    info = 'DISABLE "' + login +'"'
     return info;
 	
 
-def main():
-    args = sys.argv[1:]
-
-    if len(args) == 1:
-        info = disable_user(args)
-    elif len(args) == 3:
-        info = add_user(args)
-    else:
-        print('Usage:\n To add new user: python user_api.py <name> <login> <password>\n To disable user: python user_api.py <login>')
-        sys.exit(1)
-
+@app.route('/disable/<login>', methods=['GET'])
+def disable_login(login):
+    info = disable_user(login)
+	
     with open('data.txt', 'a') as file:
         file.write(info + '\n')
+    return info
 
+@app.route('/add/<name>/<login>/<password>', methods=['GET'])
+def add_login(name, login, password):
+    decoded_password = str(base64.b64decode(password), 'utf-8')
+	
+    if validate_password(decoded_password) == False:
+        return 'Password doesn\'t match the requirements'
+    elif validate_login(login) == False:
+        return 'User ' + login + ' already exists'
+    else:
+        info = add_user(name, login, decoded_password)
+    
+    with open('data.txt', 'a') as file:
+        file.write(info + '\n')
+    return info
 
 if __name__ == '__main__':
-    main()
+    app.run()
