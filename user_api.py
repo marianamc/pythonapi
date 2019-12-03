@@ -53,4 +53,4 @@ def add_login(name, login, password):
 
 if __name__ == '__main__':
     path  = sys.argv[1]
-    app.run()
+    app.run(host='0.0.0.0', port=8080)

@@ -1,0 +1,14 @@
+FROM python:3.7
+
+#creating directory userapi in container
+RUN mkdir c:\home\userapi
+
+#copying user_api.py from local directory to container's folder
+COPY user_api.py /home/userapi/user_api.py
+
+RUN pip install Flask
+
+EXPOSE 8080
+
+#running user_api.py in container
+CMD python /home/userapi/user_api.py results
